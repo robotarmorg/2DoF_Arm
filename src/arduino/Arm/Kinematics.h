@@ -16,6 +16,9 @@
 #ifndef KINEMATICS_H
 #define KINEMATICS_H
 
+extern const double a1;
+extern const double a2;
+
 void InverseKinematicsQ(double x, double y, double *q1, double *q2);
 void ForwardKinematicsQ(double q1, double q2, double *x, double *y);
 

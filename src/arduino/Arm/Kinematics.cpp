@@ -19,8 +19,9 @@
 
 #define sq(x)   ((x) * (x))
 
-static const double a1 = 160.0;
-static const double a2 = 173.0;
+const double a1 = 160.0;
+const double a2 = 173.0;
+
 static const double sq_a1_plus_sq_a2_sq = sq(a1) + sq(a2);
 static const double _2_a1_a2 = 2.0 * a1 * a2;
 

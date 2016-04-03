@@ -21,6 +21,8 @@
 #include "Log.h"
 #include <avr/pgmspace.h>
 
+static CommandLine  gCommandLine;
+
 inline double d2r(double degrees) {
     return degrees * M_PI / 180.0;
 }
@@ -61,6 +63,25 @@ static void fwdFunc(const char *cmd, StrTokenizer &tokenizer)
     Serial.write("\n");
 }
 
+static void helpFunc(const char *cmd, StrTokenizer &tokenizer)
+{
+    const char *helpCmd = tokenizer.NextToken();
+    CommandLine::Entry_t *entry = gCommandLine.Commands();
+    for (int i = 0; i < gCommandLine.NumCommands(); i++, entry++) {
+        if (helpCmd == NULL || strcmp_P(helpCmd, entry->mCmd) == 0) {
+            Log("  %-8S %-8S %S\n", entry->mCmd, entry->mArgs, entry->mDescription);
+        }
+    }
+}
+
+static void infoFunc(const char *cmd, StrTokenizer &tokenizer)
+{
+    Serial.write("a1 = ");
+    Serial.println(a1);
+    Serial.write("a2 = ");
+    Serial.println(a2);
+}
+
 static void invFunc(const char *cmd, StrTokenizer &tokenizer)
 {
     double  x;
@@ -84,16 +105,32 @@ static void invFunc(const char *cmd, StrTokenizer &tokenizer)
 }
 
 static const char   argsStr[]   PROGMEM = "args";
+static const char   argsArgs[]  PROGMEM = "";
+static const char   argsDescr[] PROGMEM = "Function for testing argument parsing.";
+
 static const char   fwdStr[]    PROGMEM = "fwd";
+static const char   fwdArgs[]   PROGMEM = "q1 q2";
+static const char   fwdDescr[]  PROGMEM = "Computes x & y (in mm) given q1 & q2 (in degrees).";
+
+static const char   helpStr[]   PROGMEM = "help";
+static const char   helpArgs[]  PROGMEM = "[cmd]";
+static const char   helpDescr[] PROGMEM = "Prints help information for the indicated or all commands.";
+
+static const char   infoStr[]   PROGMEM = "info";
+static const char   infoArgs[]  PROGMEM = "";
+static const char   infoDescr[] PROGMEM = "Prints misc geometry information.";
+
 static const char   invStr[]    PROGMEM = "inv";
+static const char   invArgs[]   PROGMEM = "x y";
+static const char   invDescr[]  PROGMEM = "Computes q1 & q2 (in degrees) given x & y (in mm).";
 
 CommandLine::Entry_t cmdEntry[] = {
-    { argsStr,  argsFunc },
-    { fwdStr,   fwdFunc },
-    { invStr,   invFunc },
+    { argsStr,  argsArgs,   argsDescr,  argsFunc },
+    { fwdStr,   fwdArgs,    fwdDescr,   fwdFunc },
+    { helpStr,  helpArgs,   helpDescr,  helpFunc },
+    { infoStr,  infoArgs,   infoDescr,  infoFunc },
+    { invStr,   invArgs,    invDescr,   invFunc },
 };
-
-static CommandLine  gCommandLine;
 
 void InitCommands()
 {

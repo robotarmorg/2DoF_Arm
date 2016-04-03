@@ -25,15 +25,17 @@ public:
     typedef void (*CmdFunc_t)(const char *cmd, StrTokenizer &tokenizer);
 
     typedef struct {
-        const char *mCmd;
+        const char *mCmd;           // Pointer to a flash string
+        const char *mArgs;          // Pointer to a flash string
+        const char *mDescription;   // Pointer to a flash sting
         CmdFunc_t   mFunc;
     } Entry_t;
 
-    CommandLine();
-
-    void Init(Entry_t *cmdEntries, size_t numCmdEntries);
-
-    void Process();
+                CommandLine();
+    void        Init(Entry_t *cmdEntries, size_t numCmdEntries);
+    Entry_t    *Commands()      { return mCmdEntry; }
+    size_t      NumCommands()   { return mNumCmdEntries; }
+    void        Process();
 
 private:
     char        mBuffer[128];
