@@ -22,6 +22,8 @@
 const double a1 = 160.0;
 const double a2 = 173.0;
 
+// The following are used in the inverse kinematics calculation, and are
+// constant, so we precalculate them.
 static const double sq_a1_plus_sq_a2_sq = sq(a1) + sq(a2);
 static const double _2_a1_a2 = 2.0 * a1 * a2;
 

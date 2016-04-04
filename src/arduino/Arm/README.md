@@ -2,6 +2,8 @@ This directory contains the code which runs on the Arduino.
 
 It presents a command line interface where you can enter commands.
 
+As coded, the serial port is set to run at 115200 baud.
+
 # Coordinate System
 
 The coordinate system places the origin at the center of the shaft of the
