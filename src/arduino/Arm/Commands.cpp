@@ -23,10 +23,12 @@
 
 static CommandLine  gCommandLine;
 
+// degrees to radians
 inline double d2r(double degrees) {
     return degrees * M_PI / 180.0;
 }
 
+// radians to degrees
 inline double r2d(double radians) {
     return radians * 180.0 / M_PI;
 }

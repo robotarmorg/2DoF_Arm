@@ -39,42 +39,44 @@ void CommandLine::Process()
         mPromptDisplayed = true;
     }
 
-    if (Serial.available()) {
-        int ch = Serial.read();
+    if (Serial.available() == 0) {
+        return;
+    }
 
-        if (ch == '\r' || ch == '\n') {
-            Serial.write('\n');
-            mBuffer[mIndex] = '\0';
+    int ch = Serial.read();
 
-            StrTokenizer tokenizer(mBuffer, mToken, sizeof(mToken));
-            char *cmd;
-            if ((cmd = tokenizer.NextToken()) != NULL) {
-                int i;
-                for (i = 0; i < mNumCmdEntries; i++) {
-                    if (strcmp_P(cmd, mCmdEntry[i].mCmd) == 0) {
-                        mCmdEntry[i].mFunc(cmd, tokenizer);
-                        break;
-                    }
-                }
-                if (i >= mNumCmdEntries) {
-                    Log("Unrecognized command: '%s'\n", cmd);
+    if (ch == '\r' || ch == '\n') {
+        Serial.write('\n');
+        mBuffer[mIndex] = '\0';
+
+        StrTokenizer tokenizer(mBuffer, mToken, sizeof(mToken));
+        char *cmd;
+        if ((cmd = tokenizer.NextToken()) != NULL) {
+            int i;
+            for (i = 0; i < mNumCmdEntries; i++) {
+                if (strcmp_P(cmd, mCmdEntry[i].mCmd) == 0) {
+                    mCmdEntry[i].mFunc(cmd, tokenizer);
+                    break;
                 }
             }
-
-            mIndex = 0;
-            mPromptDisplayed = false;
-            return;
-        }
-        if (ch == '\x7f' || ch == '\x08') {
-            if (mIndex > 0) {
-                Serial.write("\x08 \x08");
-                mIndex--;
+            if (i >= mNumCmdEntries) {
+                Log("Unrecognized command: '%s'\n", cmd);
             }
-            return;
         }
-        Serial.write(ch);
-        if (mIndex + 1 < sizeof(mBuffer)) {
-            mBuffer[mIndex++] = ch;
+
+        mIndex = 0;
+        mPromptDisplayed = false;
+        return;
+    }
+    if (ch == '\x7f' || ch == '\x08') {
+        if (mIndex > 0) {
+            Serial.write("\x08 \x08");
+            mIndex--;
         }
+        return;
+    }
+    Serial.write(ch);
+    if (mIndex + 1 < sizeof(mBuffer)) {
+        mBuffer[mIndex++] = ch;
     }
 }
